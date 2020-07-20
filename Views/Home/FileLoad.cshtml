@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "File Load";
+}
+
+
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Process File here</p>
+
+
+@*<form id="form" name="form" action="/Uploader" enctype="multipart/form-data" method="post">
+    <input name="files" type="file" />
+    <input type="submit" value="Upload"/>
+</form>*@
+
+
+<input type="text" id="filepath" style="width:500px">
+&nbsp;
+<button class="btn btn-primary">Process File</button>
+
+<br/>
+<label id="message"></label>
+<br/><br/>
+<table class="table table-striped" id="resultstable"></table>
+
+
+@section Scripts {
+    <script>
+
+        $("button").click(function () {
+
+            var data = new Object();
+            data.FileName = "'" + $('#filepath').val() + "'"
+            var data = JSON.stringify(data)
+
+            console.log(data)
+
+            $('#message').text('Please wait while file is being processed...')
+
+            $('#resultstable').children().remove('tr')
+
+            $.ajax({
+                url: "/api/Files/",
+                type: "POST",
+                data: data,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    console.log(data);
+                    $('#message').text('Processing successfully completed - Following information generated...')
+                    $('#message').css("color", "green")
+
+                    $.each(data, function (i, item) {
+                        $('<tr>').append(
+                            $('<td>').text(convertdatetime(item.dateTime)),
+                            $('<td>').text(item.message)
+                        ).appendTo('#resultstable');
+                        console.log(item.message.substring(0, 10))
+
+                        if (item.message.substring(0, 5) == 'ERROR') {
+                            $('#message').text('Error in Processing - Following information generated...')
+                            $('#message').css("color", "red")
+                        }
+                    })
+
+                },
+                error: function (jqXHR) {
+                    $('#message').text(jqXHR.responseText.substring(0,1000))
+                } 
+            });
+
+            function convertdatetime(orig) {
+                var date = new Date(orig)
+                var datestr =
+                ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
+                    ("00" + date.getDate()).slice(-2) + "/" +
+                    date.getFullYear() + " " +
+                    ("00" + date.getHours()).slice(-2) + ":" +
+                    ("00" + date.getMinutes()).slice(-2) + ":" +
+                    ("00" + date.getSeconds()).slice(-2);
+
+                return datestr
+            }
+
+        });
+
+    </script>
+}
