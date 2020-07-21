@@ -20,18 +20,18 @@ namespace LoadPreFileWebApp.Controllers.API
         {
             _loadfileservice = loadfileservice;
         }
-        // GET: api/<FilesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+
 
 
         // POST api/<FilesController>
         [HttpPost]
         public IActionResult Post([FromBody] FileNameDTO filename)
         {
+            if (filename == null)
+            {
+                return BadRequest();
+            }
+        
             return Ok(_loadfileservice.LoadFile(filename));
         }
 
