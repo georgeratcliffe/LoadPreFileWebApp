@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using LoadPreFileWebApp.Models;
@@ -26,6 +22,7 @@ namespace LoadPreFileWebApp.Controllers
 
         public IActionResult FileLoad()
         {
+            _logger.LogInformation("FileLoad view accessed");
             return View();
         }
 
@@ -33,13 +30,6 @@ namespace LoadPreFileWebApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        [HttpPost]
-        [Route("Uploader")]
-        public IActionResult Uploader(IFormFile file)
-        {
-            return View();
         }
 
     }

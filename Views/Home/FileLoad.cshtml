@@ -3,24 +3,17 @@
 }
 
 
+<h1>Process file here</h1>
 
-<h1>@ViewData["Title"]</h1>
-
-<p>Process File here</p>
-
-
-@*<form id="form" name="form" action="/Uploader" enctype="multipart/form-data" method="post">
-    <input name="files" type="file" />
-    <input type="submit" value="Upload"/>
-</form>*@
-
+<p>Enter full file path eg. <i>c:\misc\cru-ts-2-10.1991-2000-cutdown.pre </i></p>
 
 <input type="text" id="filepath" style="width:500px">
 &nbsp;
 <button class="btn btn-primary">Process File</button>
 
-<br/>
+<br/><br/>
 <label id="message"></label>
+<div id="spinner" style="display:none" class="spinner-border"></div>
 <br/><br/>
 <table class="table table-striped" id="resultstable"></table>
 
@@ -30,15 +23,23 @@
 
         $("button").click(function () {
 
+            $('#resultstable').children().remove('tr')
+
+            var input = $('#filepath').val()
+            if (input.slice(-4) != ".pre") {
+                $('#message').text('File must have extension .pre')
+                $('#message').css("color", "black")
+                return;
+            }
+
             var data = new Object();
             data.FileName = "'" + $('#filepath').val() + "'"
             var data = JSON.stringify(data)
 
-            console.log(data)
-
             $('#message').text('Please wait while file is being processed...')
+            $('#message').css("color", "black")
 
-            $('#resultstable').children().remove('tr')
+            $('#spinner').show()           
 
             $.ajax({
                 url: "/api/Files/",
@@ -55,7 +56,6 @@
                             $('<td>').text(convertdatetime(item.dateTime)),
                             $('<td>').text(item.message)
                         ).appendTo('#resultstable');
-                        console.log(item.message.substring(0, 10))
 
                         if (item.message.substring(0, 5) == 'ERROR') {
                             $('#message').text('Error in Processing - Following information generated...')
@@ -63,8 +63,10 @@
                         }
                     })
 
+                    $('#spinner').hide()
                 },
                 error: function (jqXHR) {
+                    $('#spinner').hide()
                     $('#message').text(jqXHR.responseText.substring(0,1000))
                 } 
             });
@@ -72,8 +74,8 @@
             function convertdatetime(orig) {
                 var date = new Date(orig)
                 var datestr =
-                ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
-                    ("00" + date.getDate()).slice(-2) + "/" +
+                    ("00" + (date.getDate())).slice(-2) + "/" +
+                    ("00" + (date.getMonth() + 1)).slice(-2) + "/" +
                     date.getFullYear() + " " +
                     ("00" + date.getHours()).slice(-2) + ":" +
                     ("00" + date.getMinutes()).slice(-2) + ":" +
@@ -81,7 +83,6 @@
 
                 return datestr
             }
-
         });
 
     </script>
