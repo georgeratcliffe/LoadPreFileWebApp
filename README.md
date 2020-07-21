@@ -5,6 +5,7 @@ the dbo.Results table. All process information is written to the dbo.ResultsLog 
 
 Some notes about the application
 <ul>
-  <li>File selection cannot be done by <i> input type='file' </i> as it only captures the fle name - not the full path</li>
-  <li>Second line </li>
+  <li>File selection cannot be done by <i> input type='file' </i> as it only captures only the file name - not the full path</li>
+  <li>Server name and database needs to be set in appsettings.json file</li>
+  <li>Data base objects reside in https://github.com/georgeratcliffe/LoadPreFileWebAppDatabase </li>
 </ul>
